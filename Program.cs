@@ -15,11 +15,15 @@ namespace matesoBeezupTest
 
 
             Console.WriteLine(" 1 : Read file and concatenate");
+            Console.WriteLine(" 2 : Read file and show json");
             string value = Console.ReadLine();
             switch(value)
             {
                 case "1":
                     read.step1();
+                    break;
+                case "2":
+                    read.step2();
                     break;
                 default:
                     break;

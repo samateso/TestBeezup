@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace matesoBeezupTest
 {
@@ -50,8 +51,9 @@ namespace matesoBeezupTest
             }
         }
 
-        public void step2()
+        public List<Values> step2()
         {
+            List<Values> vals = new List<Values>();
             if (Path != null)
             {
                 using (var reader = new StreamReader(Path))
@@ -61,7 +63,7 @@ namespace matesoBeezupTest
                     csv.Read();
                     csv.ReadHeader();
 
-                    List<Values> vals = new List<Values>();
+                    
                     while (csv.Read())
                     {
                         int colC = 0;
@@ -95,11 +97,53 @@ namespace matesoBeezupTest
                         }
                     }
 
+                    /*
                     JsonSerializerSettings jsonSerializer = new JsonSerializerSettings();
                     jsonSerializer.NullValueHandling = NullValueHandling.Ignore;
                     Console.WriteLine(JsonConvert.SerializeObject(vals, jsonSerializer));
+                    */
                 }
             }
+            return vals;
+        }
+
+        public void step3(string type)
+        {
+            switch(type)
+            {
+                case "json":
+                    JsonSerialize(step2());
+                    break;
+                case "text":
+                    TextSerialize(step2());
+                    break;
+                case "xml":
+                    XMLSerialize(step2());
+                    break;
+            }
+        }
+
+        private void JsonSerialize(List<Values> vals)
+        {
+            JsonSerializerSettings jsonSerializer = new JsonSerializerSettings();
+            jsonSerializer.NullValueHandling = NullValueHandling.Ignore;
+            Console.WriteLine(JsonConvert.SerializeObject(vals, jsonSerializer));
+        }
+
+        private void TextSerialize(List<Values> vals)
+        {
+            foreach(Values values in vals)
+            {
+                Console.WriteLine(values.ToString());
+            }
+        }
+
+        private void XMLSerialize(List<Values> vals)
+        {
+            XmlSerializer xMLSerialize = new XmlSerializer(typeof(List<Values>));
+            xMLSerialize.Serialize(Console.Out, vals);
+            Console.WriteLine();
+            Console.ReadLine();
         }
     }
 }
